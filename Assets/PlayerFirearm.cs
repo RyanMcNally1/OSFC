@@ -41,30 +41,24 @@ public class PlayerFirearm : MonoBehaviour
         UpdateAmmoUI();
     }
 
-    private void Update()
-    {
-        if (isReloading)
-        {
+    private void Update() {
+        if (isReloading) {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
+        if (Input.GetKeyDown(KeyCode.R)) {
             StartReload();
             return;
         }
 
-        if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
-        {
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime) {
             TryFire();
         }
     }
 
-    private void TryFire()
-    {
-        if (currentAmmo <= 0)
-        {
-            StartReload();
+    private void TryFire() {
+        if (currentAmmo <= 0) {
+            Debug.Log("No ammo. Press R to reload.");
             return;
         }
 
@@ -79,10 +73,8 @@ public class PlayerFirearm : MonoBehaviour
         Debug.Log($"Fired. Ammo: {currentAmmo} / {reserveAmmo}");
     }
 
-    private void FireRaycast()
-    {
-        if (playerCamera == null)
-        {
+    private void FireRaycast() {
+        if (playerCamera == null) {
             return;
         }
 
@@ -92,17 +84,10 @@ public class PlayerFirearm : MonoBehaviour
 
         Vector3 targetPoint;
 
-        if (Physics.Raycast(
-                aimRay,
-                out RaycastHit cameraHit,
-                range,
-                Physics.DefaultRaycastLayers,
-                QueryTriggerInteraction.Ignore))
-        {
+        if (Physics.Raycast(aimRay, out RaycastHit cameraHit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) {
             targetPoint = cameraHit.point;
         }
-        else
-        {
+        else {
             targetPoint = aimRay.origin + aimRay.direction * range;
         }
 
@@ -112,33 +97,19 @@ public class PlayerFirearm : MonoBehaviour
 
         Vector3 shotDirection = (targetPoint - shotOrigin).normalized;
 
-        if (Physics.Raycast(
-                shotOrigin,
-                shotDirection,
-                out RaycastHit weaponHit,
-                range,
-                Physics.DefaultRaycastLayers,
-                QueryTriggerInteraction.Ignore))
-        {
+        if (Physics.Raycast(shotOrigin, shotDirection, out RaycastHit weaponHit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) {
             Debug.Log($"Hit: {weaponHit.collider.name}");
 
-            Debug.DrawLine(
-                shotOrigin,
-                weaponHit.point,
-                Color.red,
-                1f
-            );
+            Debug.DrawLine(shotOrigin, weaponHit.point, Color.red, 1f);
 
             Damageable damageable =
                 weaponHit.collider.GetComponentInParent<Damageable>();
 
-            if (damageable != null)
-            {
+            if (damageable != null){
                 damageable.TakeDamage(damage);
             }
         }
-        else
-        {
+        else {
             Debug.DrawRay(
                 shotOrigin,
                 shotDirection * range,
@@ -148,21 +119,17 @@ public class PlayerFirearm : MonoBehaviour
         }
     }
 
-    private void StartReload()
-    {
-        if (isReloading)
-        {
+    private void StartReload() {
+        if (isReloading) {
             return;
         }
 
-        if (currentAmmo >= magazineSize)
-        {
+        if (currentAmmo >= magazineSize) {
             Debug.Log("Magazine is already full.");
             return;
         }
 
-        if (reserveAmmo <= 0)
-        {
+        if (reserveAmmo <= 0) {
             Debug.Log("No reserve ammunition.");
             return;
         }
