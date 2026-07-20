@@ -16,6 +16,9 @@ public class UIManager : MonoBehaviour
     [Header("Weapon")]
     public TMP_Text ammoText;
 
+    [Header("Grenades")]
+    public TMP_Text grenadeText;
+
     private void Awake() {
         Instance = this;
     }
@@ -34,5 +37,11 @@ public class UIManager : MonoBehaviour
 
     public void ShowReloading(bool show) {
         reloadText.SetActive(show);
+    }
+
+    public void UpdateGrenades(int amount) {
+        if (grenadeText != null) {
+            grenadeText.text = "Grenades: " + amount;
+        }
     }
 }

@@ -5,12 +5,16 @@ public class PlayerEquipment : MonoBehaviour {
     public enum EquipmentSlot {
         None,
         Rifle,
-        Knife
+        Knife,
+        Grenade,
+        Bandage
     }
 
     [Header("Equipment Objects")]
     public GameObject rifleObject;
     public GameObject knifeObject;
+    public GameObject grenadeObject;
+    public GameObject bandageObject;
 
     [Header("Weapon UI")]
     public GameObject crosshairObject;
@@ -30,6 +34,14 @@ public class PlayerEquipment : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Alpha2)) {
             ToggleEquipment(EquipmentSlot.Knife);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            ToggleEquipment(EquipmentSlot.Grenade);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4)) {
+            ToggleEquipment(EquipmentSlot.Bandage);
         }
     }
 
@@ -51,12 +63,22 @@ public class PlayerEquipment : MonoBehaviour {
         bool knifeEquipped =
             currentEquipment == EquipmentSlot.Knife;
 
+        bool grenadeEquipped =
+            currentEquipment == EquipmentSlot.Grenade;
+
+        bool bandageEquipped =
+            currentEquipment == EquipmentSlot.Bandage;
+
         if (rifleObject != null) {
             rifleObject.SetActive(rifleEquipped);
         }
 
         if (knifeObject != null) {
             knifeObject.SetActive(knifeEquipped);
+        }
+
+        if (grenadeObject != null) {
+            grenadeObject.SetActive(grenadeEquipped);
         }
 
         if (crosshairObject != null) {
@@ -74,6 +96,14 @@ public class PlayerEquipment : MonoBehaviour {
 
     public bool IsKnifeEquipped() {
         return currentEquipment == EquipmentSlot.Knife;
+    }
+
+    public bool IsGrenadeEquipped() {
+        return currentEquipment == EquipmentSlot.Grenade;
+    }
+
+    public bool IsBandageEquipped() {
+        return currentEquipment == EquipmentSlot.Bandage;
     }
 
     public EquipmentSlot GetCurrentEquipment() {
