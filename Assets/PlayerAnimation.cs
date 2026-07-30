@@ -15,7 +15,10 @@ public class PlayerAnimation : MonoBehaviour {
     }
 
     void UpdateMovementAnimation() {
-        if (animator == null || playerRigidbody == null) {
+        if (
+            animator == null ||
+            playerRigidbody == null
+        ) {
             return;
         }
 
@@ -25,13 +28,33 @@ public class PlayerAnimation : MonoBehaviour {
             playerRigidbody.linearVelocity.z
         );
 
-        float normalizedSpeed = Mathf.Clamp01(
-            horizontalVelocity.magnitude / maximumMoveSpeed
+        Vector3 localVelocity =
+            transform.InverseTransformDirection(
+                horizontalVelocity
+            );
+
+        float normalizedForwardSpeed = Mathf.Clamp(
+            localVelocity.z / maximumMoveSpeed,
+            -1f,
+            1f
+        );
+
+        float normalizedSidewaysSpeed = Mathf.Clamp(
+            localVelocity.x / maximumMoveSpeed,
+            -1f,
+            1f
         );
 
         animator.SetFloat(
             "MoveSpeed",
-            normalizedSpeed,
+            normalizedForwardSpeed,
+            animationDampTime,
+            Time.deltaTime
+        );
+
+        animator.SetFloat(
+            "MoveX",
+            normalizedSidewaysSpeed,
             animationDampTime,
             Time.deltaTime
         );
