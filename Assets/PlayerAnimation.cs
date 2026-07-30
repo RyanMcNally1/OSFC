@@ -36,4 +36,31 @@ public class PlayerAnimation : MonoBehaviour {
             Time.deltaTime
         );
     }
+
+    public void PlayFireAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.SetTrigger("Fire");
+    }
+
+    public void PlayReloadAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.SetTrigger("Reload");
+    }
+
+    public void SetReloading(bool isReloading) {
+        if (animator == null) {
+            return;
+        }
+
+        animator.SetBool(
+            "IsReloading",
+            isReloading
+        );
+    }
 }
