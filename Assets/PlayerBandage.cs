@@ -68,6 +68,14 @@ public class PlayerBandage : MonoBehaviour {
         UpdateBandageUI();
     }
 
+    public void RefillBandages() {
+        currentBandages = maxBandages;
+
+        UIManager.Instance.UpdateBandages(
+            currentBandages
+        );
+    }
+
     private void UpdateBandageUI() {
         if (UIManager.Instance != null) {
             UIManager.Instance.UpdateBandages(currentBandages);

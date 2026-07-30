@@ -12,11 +12,12 @@ public class PlayerFirearm : MonoBehaviour
     [SerializeField] private float range = 150f;
     [SerializeField] private float roundsPerMinute = 600f;
 
-    [Header("Ammunition")]
-    [SerializeField] private int magazineSize = 30;
-    [SerializeField] private int currentAmmo = 30;
-    [SerializeField] private int reserveAmmo = 180;
-    [SerializeField] private float reloadDuration = 1.8f;
+    [Header("Ammo")]
+    public int magazineSize = 30;
+    public int currentAmmo = 30;
+    public int maxReserveAmmo = 180;
+    public int reserveAmmo = 180;
+    private float reloadDuration = 1.8f;
 
     private float nextFireTime;
     private bool isReloading;
@@ -154,6 +155,16 @@ public class PlayerFirearm : MonoBehaviour
 
         UIManager.Instance.ShowReloading(false);
         UpdateAmmoUI();
+    }
+
+    public void RefillAmmo() {
+        currentAmmo = magazineSize;
+        reserveAmmo = maxReserveAmmo;
+
+        UIManager.Instance.UpdateAmmo(
+            currentAmmo,
+            reserveAmmo
+        );
     }
 
     private void UpdateAmmoUI() {

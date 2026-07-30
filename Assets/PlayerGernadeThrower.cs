@@ -8,8 +8,8 @@ public class PlayerGrenadeThrower : MonoBehaviour {
     public Transform throwPoint;
 
     [Header("Grenade Inventory")]
-    [SerializeField] private int maxGrenades = 3;
-    [SerializeField] private int currentGrenades = 3;
+    public int maxGrenades = 3;
+    public int currentGrenades = 3;
 
     [Header("Throw Settings")]
     public float throwForce = 14f;
@@ -94,6 +94,14 @@ public class PlayerGrenadeThrower : MonoBehaviour {
         );
 
         UpdateGrenadeUI();
+    }
+
+    public void RefillGrenades() {
+        currentGrenades = maxGrenades;
+
+        UIManager.Instance.UpdateGrenades(
+            currentGrenades
+        );
     }
 
     private void UpdateGrenadeUI() {

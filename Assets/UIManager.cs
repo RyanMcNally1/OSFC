@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
     [Header("Grenades")]
     public TMP_Text grenadeText;
 
+    [Header("Interaction")]
+    public TMP_Text interactionText;
+
     private void Awake() {
         Instance = this;
     }
@@ -43,5 +46,14 @@ public class UIManager : MonoBehaviour
         if (grenadeText != null) {
             grenadeText.text = "Grenades: " + amount;
         }
+    }
+
+    public void ShowInteraction(string text) {
+        interactionText.gameObject.SetActive(true);
+        interactionText.text = text;
+    }
+
+    public void HideInteraction() {
+        interactionText.gameObject.SetActive(false);
     }
 }
