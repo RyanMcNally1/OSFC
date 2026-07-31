@@ -16,6 +16,11 @@ public class PlayerAnimation : MonoBehaviour {
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
+    [Header("Hit Reaction")]
+    public float hitAnimationCooldown = 0.3f;
+
+    private float nextHitAnimationTime;
+
     void Update() {
         UpdateMovementAnimation();
         UpdateJumpAnimation();
@@ -149,5 +154,59 @@ public class PlayerAnimation : MonoBehaviour {
             "IsReloading",
             isReloading
         );
+    }
+
+    public void PlayGrenadeThrowAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.ResetTrigger("ThrowGrenade");
+        animator.SetTrigger("ThrowGrenade");
+    }
+
+    public void PlayKnifeAttackAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.ResetTrigger("KnifeAttack");
+        animator.SetTrigger("KnifeAttack");
+    }
+
+    public void PlayBandageAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.ResetTrigger("UseBandage");
+        animator.SetTrigger("UseBandage");
+    }
+
+    public void SetAiming(bool aiming) {
+        if (animator == null) {
+            return;
+        }
+
+        animator.SetBool(
+            "IsAiming",
+            aiming
+        );
+    }
+
+    public void PlayHitAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        if (Time.time < nextHitAnimationTime) {
+            return;
+        }
+
+        nextHitAnimationTime =
+            Time.time + hitAnimationCooldown;
+
+        animator.ResetTrigger("TakeHit");
+        animator.SetTrigger("TakeHit");
     }
 }

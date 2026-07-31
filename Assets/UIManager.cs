@@ -22,6 +22,9 @@ public class UIManager : MonoBehaviour
     [Header("Interaction")]
     public TMP_Text interactionText;
 
+    [Header("Actions")]
+    public GameObject bandagingText;
+
     private void Awake() {
         Instance = this;
     }
@@ -40,6 +43,12 @@ public class UIManager : MonoBehaviour
 
     public void ShowReloading(bool show) {
         reloadText.SetActive(show);
+    }
+
+    public void ShowBandaging(bool show) {
+        if (bandagingText != null) {
+            bandagingText.SetActive(show);
+        }
     }
 
     public void UpdateGrenades(int amount) {

@@ -41,6 +41,12 @@ public class PlayerController : MonoBehaviour {
     [Header("Animation")]
     public PlayerAnimation playerAnimation;
 
+    [Header("Action Movement")]
+    [Range(0f, 1f)]
+    public float bandageSpeedMultiplier = 0.35f;
+
+    private bool isBandaging;
+
     void Start() {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -77,6 +83,10 @@ public class PlayerController : MonoBehaviour {
         currentSensitivity = isAiming
             ? aimSensitivity
             : normalSensitivity;
+
+        if (playerAnimation != null) {
+            playerAnimation.SetAiming(isAiming);
+}
     }
 
     void HandleHorizontalRotation() {
@@ -100,6 +110,10 @@ void HandleMovement() {
     }
     else {
         speed = walkSpeed;
+    }
+
+    if (isBandaging) {
+        speed *= bandageSpeedMultiplier;
     }
 
     Vector3 localInput = new Vector3(
@@ -303,5 +317,9 @@ void HandleMovement() {
         }
 
         return angle;
+    }
+
+    public void SetBandaging(bool bandaging) {
+        isBandaging = bandaging;
     }
 }

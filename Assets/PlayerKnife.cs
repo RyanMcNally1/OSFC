@@ -11,6 +11,8 @@ public class PlayerKnife : MonoBehaviour {
     public float attackRadius = 0.5f;
     public float attackCooldown = 0.6f;
 
+    public PlayerAnimation playerAnimation;
+
     [Header("Target Detection")]
     public LayerMask targetLayers = ~0;
 
@@ -24,6 +26,10 @@ public class PlayerKnife : MonoBehaviour {
 
     void Attack() {
         nextAttackTime = Time.time + attackCooldown;
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayKnifeAttackAnimation();
+        }
 
         Vector3 attackOrigin = playerCamera.transform.position;
         Vector3 attackDirection = playerCamera.transform.forward;

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerGrenadeThrower : MonoBehaviour {
@@ -16,6 +17,11 @@ public class PlayerGrenadeThrower : MonoBehaviour {
     public float upwardForce = 3f;
     public float throwCooldown = 0.75f;
 
+    [Header("Animation")]
+    public PlayerAnimation playerAnimation;
+    public float grenadeReleaseDelay = 0.45f;
+
+    private bool isThrowing;
     private float nextThrowTime;
 
     public int CurrentGrenades {
@@ -29,7 +35,11 @@ public class PlayerGrenadeThrower : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetMouseButtonDown(0) && Time.time >= nextThrowTime) {
+        if (
+            Input.GetMouseButtonDown(0) &&
+            Time.time >= nextThrowTime &&
+            !isThrowing
+        ) {
             TryThrowGrenade();
         }
     }
@@ -46,7 +56,7 @@ public class PlayerGrenadeThrower : MonoBehaviour {
         }
 
         if (throwPoint == null) {
-            Debug.LogWarning("Grenade throw point has not been assigned.");
+            Debug.LogWarning("Throw point has not been assigned.");
             return;
         }
 
@@ -55,6 +65,27 @@ public class PlayerGrenadeThrower : MonoBehaviour {
             return;
         }
 
+        StartCoroutine(ThrowGrenadeRoutine());
+    }
+
+    IEnumerator ThrowGrenadeRoutine() {
+        isThrowing = true;
+        nextThrowTime = Time.time + throwCooldown;
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayGrenadeThrowAnimation();
+        }
+
+        yield return new WaitForSeconds(
+            grenadeReleaseDelay
+        );
+
+        ReleaseGrenade();
+
+        isThrowing = false;
+    }
+
+    void ReleaseGrenade() {
         GameObject grenadeObject = Instantiate(
             grenadePrefab,
             throwPoint.position,
@@ -65,14 +96,41 @@ public class PlayerGrenadeThrower : MonoBehaviour {
             grenadeObject.GetComponent<Rigidbody>();
 
         if (grenadeRigidbody == null) {
-            Debug.LogError("The grenade prefab needs a Rigidbody.");
+            Debug.LogError(
+                "The grenade prefab needs a Rigidbody."
+            );
+
             Destroy(grenadeObject);
             return;
         }
 
+        Vector3 aimPoint;
+
+        if (Physics.Raycast(
+            playerCamera.transform.position,
+            playerCamera.transform.forward,
+            out RaycastHit hit,
+            50f
+        )) {
+            aimPoint = hit.point;
+        }
+        else {
+            aimPoint =
+                playerCamera.transform.position +
+                playerCamera.transform.forward * 50f;
+        }
+
         Vector3 throwDirection =
-            playerCamera.transform.forward * throwForce +
+            (aimPoint - throwPoint.position).normalized;
+
+        Vector3 throwVelocity =
+            throwDirection * throwForce +
             Vector3.up * upwardForce;
+
+        grenadeRigidbody.AddForce(
+            throwVelocity,
+            ForceMode.VelocityChange
+        );
 
         grenadeRigidbody.AddForce(
             throwDirection,
@@ -80,8 +138,6 @@ public class PlayerGrenadeThrower : MonoBehaviour {
         );
 
         currentGrenades--;
-        nextThrowTime = Time.time + throwCooldown;
-
         UpdateGrenadeUI();
     }
 

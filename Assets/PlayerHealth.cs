@@ -10,21 +10,53 @@ public class PlayerHealth : MonoBehaviour
     [Header("UI")]
     public Slider healthBar;
 
+    [Header("Animation")]
+    public PlayerAnimation playerAnimation;
+
+    [Header("Damage Effects")]
+    public DamageFlash damageFlash;
+
     void Start() {
         currentHealth = maxHealth;
         UpdateHealthUI();
+
+        if (playerAnimation == null) {
+            playerAnimation =
+                GetComponent<PlayerAnimation>();
+        }
+
+        if (damageFlash == null) {
+            damageFlash =
+                GetComponent<DamageFlash>();
+        }
     }
 
     public void TakeDamage(float damage) {
-        currentHealth -= damage;
+        if (currentHealth <= 0f) {
+            return;
+        }
 
-        if (currentHealth < 0)
-            currentHealth = 0;
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(
+            currentHealth,
+            0f,
+            maxHealth
+        );
+
+        if (damageFlash != null) {
+            damageFlash.Flash();
+        }
+
+        if (
+            currentHealth > 0f &&
+            playerAnimation != null
+        ) {
+            playerAnimation.PlayHitAnimation();
+        }
 
         UpdateHealthUI();
 
-        if (currentHealth <= 0)
-        {
+        if (currentHealth <= 0f) {
             Die();
         }
     }
