@@ -5,19 +5,27 @@ public class PlayerAnimation : MonoBehaviour {
     [Header("References")]
     public Animator animator;
     public Rigidbody playerRigidbody;
+    public Transform movementReference;
 
     [Header("Movement")]
     public float maximumMoveSpeed = 6f;
     public float animationDampTime = 0.1f;
 
+    [Header("Grounding")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+
     void Update() {
         UpdateMovementAnimation();
+        UpdateJumpAnimation();
     }
 
     void UpdateMovementAnimation() {
         if (
             animator == null ||
-            playerRigidbody == null
+            playerRigidbody == null ||
+            movementReference == null
         ) {
             return;
         }
@@ -29,17 +37,17 @@ public class PlayerAnimation : MonoBehaviour {
         );
 
         Vector3 localVelocity =
-            transform.InverseTransformDirection(
+            movementReference.InverseTransformDirection(
                 horizontalVelocity
             );
 
-        float normalizedForwardSpeed = Mathf.Clamp(
+        float moveSpeed = Mathf.Clamp(
             localVelocity.z / maximumMoveSpeed,
             -1f,
             1f
         );
 
-        float normalizedSidewaysSpeed = Mathf.Clamp(
+        float moveX = Mathf.Clamp(
             localVelocity.x / maximumMoveSpeed,
             -1f,
             1f
@@ -47,16 +55,70 @@ public class PlayerAnimation : MonoBehaviour {
 
         animator.SetFloat(
             "MoveSpeed",
-            normalizedForwardSpeed,
+            moveSpeed,
             animationDampTime,
             Time.deltaTime
         );
 
         animator.SetFloat(
             "MoveX",
-            normalizedSidewaysSpeed,
+            moveX,
             animationDampTime,
             Time.deltaTime
+        );
+    }
+
+    void UpdateJumpAnimation() {
+        if (
+            animator == null ||
+            playerRigidbody == null
+        ) {
+            return;
+        }
+
+        bool isGrounded = CheckGrounded();
+
+        animator.SetBool(
+            "IsGrounded",
+            isGrounded
+        );
+
+        animator.SetFloat(
+            "VerticalSpeed",
+            playerRigidbody.linearVelocity.y
+        );
+    }
+
+    bool CheckGrounded() {
+        if (groundCheck == null) {
+            return false;
+        }
+
+        return Physics.CheckSphere(
+            groundCheck.position,
+            groundCheckRadius,
+            groundLayer,
+            QueryTriggerInteraction.Ignore
+        );
+    }
+
+    public void PlayJumpAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.ResetTrigger("Jump");
+        animator.SetTrigger("Jump");
+    }
+
+    void OnDrawGizmosSelected() {
+        if (groundCheck == null) {
+            return;
+        }
+
+        Gizmos.DrawWireSphere(
+            groundCheck.position,
+            groundCheckRadius
         );
     }
 
@@ -65,6 +127,7 @@ public class PlayerAnimation : MonoBehaviour {
             return;
         }
 
+        animator.ResetTrigger("Fire");
         animator.SetTrigger("Fire");
     }
 
@@ -73,6 +136,7 @@ public class PlayerAnimation : MonoBehaviour {
             return;
         }
 
+        animator.ResetTrigger("Reload");
         animator.SetTrigger("Reload");
     }
 

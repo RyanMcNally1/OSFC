@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour {
     private bool touchingEnemy = false;
     private Vector3 enemyBlockDirection;
 
+    [Header("Animation")]
+    public PlayerAnimation playerAnimation;
+
     void Start() {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -159,6 +162,10 @@ void HandleMovement() {
     ) {
         newVelocity.y = jumpSpeed;
         isJumping = true;
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayJumpAnimation();
+        }
     }
 
     rb.linearVelocity =

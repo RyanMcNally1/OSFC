@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 112088513}
   - component: {fileID: 112088512}
   - component: {fileID: 112088511}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -765,7 +765,7 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 8
   aimWalkSpeed: 2
-  jumpSpeed: 4
+  jumpSpeed: 5
   playerCamera: {fileID: 135798752}
   normalFOV: 60
   aimFOV: 40
@@ -773,6 +773,7 @@ MonoBehaviour:
   normalSensitivity: 2
   aimSensitivity: 1
   enemyBlockedSpeedMultiplier: 0.15
+  playerAnimation: {fileID: 222991380}
 --- !u!54 &222991372
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -895,6 +896,7 @@ Transform:
   m_Children:
   - {fileID: 1368969782}
   - {fileID: 1640281302}
+  - {fileID: 566482946}
   - {fileID: 175513323}
   - {fileID: 1067506020}
   - {fileID: 1354999526}
@@ -963,8 +965,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   animator: {fileID: 192799935}
   playerRigidbody: {fileID: 222991372}
+  movementReference: {fileID: 222991376}
   maximumMoveSpeed: 6
   animationDampTime: 0.1
+  groundCheck: {fileID: 566482946}
+  groundCheckRadius: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &225102893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,6 +1643,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_ActionId: 15cef263-9014-4fd5-94d9-4e4a6234a6ef
+--- !u!1 &566482945
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 566482946}
+  m_Layer: 3
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &566482946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566482945}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.816, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 222991376}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &591745013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,7 +1731,7 @@ GameObject:
   - component: {fileID: 658933596}
   - component: {fileID: 658933595}
   - component: {fileID: 658933594}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2527,7 +2566,7 @@ GameObject:
   - component: {fileID: 1539110668}
   - component: {fileID: 1539110667}
   - component: {fileID: 1539110666}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SupplyCrate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
