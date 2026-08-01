@@ -13,19 +13,46 @@ public class Grenade : MonoBehaviour {
     [Header("Detection")]
     public LayerMask damageLayers = ~0;
 
+    [Header("Explosion Visual")]
+    public GameObject explosionRadiusVisual;
+    public float explosionFlashTime = 0.1f;
+
     private bool hasExploded;
 
     void Start() {
+        if (explosionRadiusVisual != null) {
+            explosionRadiusVisual.SetActive(false);
+        }
+
         StartCoroutine(Fuse());
     }
 
-    void Explode() {
+    IEnumerator Fuse() {
+        yield return new WaitForSeconds(fuseTime);
+
+        StartCoroutine(ExplodeRoutine());
+    }
+
+    IEnumerator ExplodeRoutine() {
         if (hasExploded) {
-            return;
+            yield break;
         }
 
         hasExploded = true;
 
+        ApplyExplosionDamage();
+        ShowExplosionVisual();
+
+        Debug.Log("Grenade exploded.");
+
+        yield return new WaitForSeconds(
+            explosionFlashTime
+        );
+
+        Destroy(gameObject);
+    }
+
+    void ApplyExplosionDamage() {
         Collider[] hitColliders = Physics.OverlapSphere(
             transform.position,
             explosionRadius,
@@ -33,39 +60,64 @@ public class Grenade : MonoBehaviour {
             QueryTriggerInteraction.Ignore
         );
 
-        HashSet<Damageable> damagedTargets = new HashSet<Damageable>();
+        HashSet<Damageable> damagedTargets =
+            new HashSet<Damageable>();
+
+        HashSet<Rigidbody> pushedRigidbodies =
+            new HashSet<Rigidbody>();
 
         foreach (Collider hitCollider in hitColliders) {
             Damageable damageable =
                 hitCollider.GetComponentInParent<Damageable>();
 
-            if (damageable != null && !damagedTargets.Contains(damageable)) {
-                damageable.TakeDamage(explosionDamage);
-                damagedTargets.Add(damageable);
+            if (
+                damageable != null &&
+                !damagedTargets.Contains(damageable)
+            ) {
+                damageable.TakeDamage(
+                    explosionDamage
+                );
+
+                damagedTargets.Add(
+                    damageable
+                );
             }
 
-            Rigidbody hitRigidbody = hitCollider.attachedRigidbody;
+            Rigidbody hitRigidbody =
+                hitCollider.attachedRigidbody;
 
-            if (hitRigidbody != null) {
+            if (
+                hitRigidbody != null &&
+                !pushedRigidbodies.Contains(hitRigidbody)
+            ) {
                 hitRigidbody.AddExplosionForce(
                     explosionForce,
                     transform.position,
                     explosionRadius
                 );
+
+                pushedRigidbodies.Add(
+                    hitRigidbody
+                );
             }
         }
-
-        Debug.Log("Grenade exploded.");
-
-        Destroy(gameObject);
     }
 
-    IEnumerator Fuse() {
-        yield return new WaitForSeconds(fuseTime);
-        Explode();
+    void ShowExplosionVisual() {
+        if (explosionRadiusVisual == null) {
+            return;
+        }
+
+        explosionRadiusVisual.transform.localPosition = Vector3.zero;
+        explosionRadiusVisual.transform.localRotation = Quaternion.identity;
+
+        explosionRadiusVisual.SetActive(true);
     }
 
     void OnDrawGizmosSelected() {
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
+        Gizmos.DrawWireSphere(
+            transform.position,
+            explosionRadius
+        );
     }
 }
