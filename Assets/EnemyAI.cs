@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour {
@@ -5,6 +6,11 @@ public class EnemyAI : MonoBehaviour {
     [Header("References")]
     public Rigidbody rb;
     public Transform player;
+    public Transform eyePoint;
+
+    [Header("Detection")]
+    public float detectionRange = 15f;
+    public LayerMask lineOfSightLayers = ~0;
 
     [Header("Movement")]
     public float moveSpeed = 4f;
@@ -16,24 +22,31 @@ public class EnemyAI : MonoBehaviour {
     public float attackRange = 1.8f;
     public float attackDamage = 15f;
     public float attackCooldown = 1.2f;
+    public float attackHitDelay = 0.35f;
 
-    [Header("Physical Interaction")]
-    public float playerPushForce = 2f;
+    [Header("Animation")]
+    public EnemyAnimation enemyAnimation;
 
     private PlayerHealth playerHealth;
     private float nextAttackTime;
+    private bool canSeePlayer;
+    private bool hasDetectedPlayer;
 
     void Start() {
         if (rb == null) {
             rb = GetComponent<Rigidbody>();
         }
 
-        if (player == null) {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+        if (enemyAnimation == null) {
+            enemyAnimation = GetComponent<EnemyAnimation>();
+        }
 
-            if (playerObject != null) {
-                player = playerObject.transform;
+        if (player == null) {
+            PlayerController playerController =
+                FindAnyObjectByType<PlayerController>();
+
+            if (playerController != null) {
+                player = playerController.transform;
             }
         }
 
@@ -44,7 +57,7 @@ public class EnemyAI : MonoBehaviour {
         else {
             Debug.LogWarning(
                 gameObject.name +
-                " could not find an object tagged Player."
+                " could not find the player."
             );
         }
     }
@@ -54,11 +67,21 @@ public class EnemyAI : MonoBehaviour {
             return;
         }
 
-        float distanceToPlayer =
-            Vector3.Distance(
-                transform.position,
-                player.position
+        if (!hasDetectedPlayer && CanDetectPlayer()) {
+            hasDetectedPlayer = true;
+
+            Debug.Log(
+                gameObject.name +
+                " detected the player."
             );
+        }
+
+        if (!hasDetectedPlayer) {
+            return;
+        }
+
+        float distanceToPlayer =
+            GetHorizontalDistanceToPlayer();
 
         if (distanceToPlayer <= attackRange) {
             TryAttack();
@@ -70,11 +93,13 @@ public class EnemyAI : MonoBehaviour {
             return;
         }
 
-        Vector3 directionToPlayer =
-            player.position -
-            transform.position;
+        if (!hasDetectedPlayer) {
+            SlowDown();
+            return;
+        }
 
-        directionToPlayer.y = 0f;
+        Vector3 directionToPlayer =
+            GetDirectionToPlayer();
 
         float distanceToPlayer =
             directionToPlayer.magnitude;
@@ -93,6 +118,73 @@ public class EnemyAI : MonoBehaviour {
         else {
             SlowDown();
         }
+    }
+
+    bool CanDetectPlayer() {
+        Vector3 directionToPlayer =
+            GetDirectionToPlayer();
+
+        float distanceToPlayer =
+            directionToPlayer.magnitude;
+
+        if (distanceToPlayer > detectionRange) {
+            return false;
+        }
+
+        Vector3 rayOrigin;
+
+        if (eyePoint != null) {
+            rayOrigin = eyePoint.position;
+        }
+        else {
+            rayOrigin =
+                transform.position +
+                Vector3.up * 1.5f;
+        }
+
+        Vector3 targetPosition =
+            player.position +
+            Vector3.up * 1f;
+
+        Vector3 rayDirection =
+            targetPosition - rayOrigin;
+
+        float rayDistance =
+            rayDirection.magnitude;
+
+        rayDirection.Normalize();
+
+        if (Physics.Raycast(
+            rayOrigin,
+            rayDirection,
+            out RaycastHit hit,
+            rayDistance,
+            lineOfSightLayers,
+            QueryTriggerInteraction.Ignore
+        )) {
+            bool hitPlayer =
+                hit.transform == player ||
+                hit.transform.IsChildOf(player);
+
+            return hitPlayer;
+        }
+
+        return false;
+    }
+
+    Vector3 GetDirectionToPlayer() {
+        Vector3 targetPosition =
+            player.position;
+
+        targetPosition.y =
+            transform.position.y;
+
+        return targetPosition -
+            transform.position;
+    }
+
+    float GetHorizontalDistanceToPlayer() {
+        return GetDirectionToPlayer().magnitude;
     }
 
     void MoveTowardsPlayer(Vector3 direction) {
@@ -122,23 +214,27 @@ public class EnemyAI : MonoBehaviour {
     }
 
     void SlowDown() {
-        Vector3 horizontalVelocity = new Vector3(
-            rb.linearVelocity.x,
-            0f,
-            rb.linearVelocity.z
-        );
+        Vector3 horizontalVelocity =
+            new Vector3(
+                rb.linearVelocity.x,
+                0f,
+                rb.linearVelocity.z
+            );
 
-        horizontalVelocity = Vector3.MoveTowards(
-            horizontalVelocity,
-            Vector3.zero,
-            acceleration * 0.25f * Time.fixedDeltaTime
-        );
+        horizontalVelocity =
+            Vector3.MoveTowards(
+                horizontalVelocity,
+                Vector3.zero,
+                acceleration *
+                Time.fixedDeltaTime
+            );
 
-        rb.linearVelocity = new Vector3(
-            horizontalVelocity.x,
-            rb.linearVelocity.y,
-            horizontalVelocity.z
-        );
+        rb.linearVelocity =
+            new Vector3(
+                horizontalVelocity.x,
+                rb.linearVelocity.y,
+                horizontalVelocity.z
+            );
     }
 
     void RotateTowardsPlayer(
@@ -163,16 +259,44 @@ public class EnemyAI : MonoBehaviour {
             return;
         }
 
-        if (playerHealth == null) {
-            Debug.LogWarning(
-                "Enemy could not find PlayerHealth."
-            );
+        nextAttackTime =
+            Time.time + attackCooldown;
 
+        if (enemyAnimation != null) {
+            enemyAnimation.PlayAttackAnimation();
+        }
+
+        StartCoroutine(
+            DelayedAttack()
+        );
+    }
+
+    IEnumerator DelayedAttack() {
+        yield return new WaitForSeconds(
+            attackHitDelay
+        );
+
+        ApplyAttackDamage();
+    }
+
+    public void ApplyAttackDamage() {
+        if (
+            player == null ||
+            playerHealth == null
+        ) {
             return;
         }
 
-        nextAttackTime =
-            Time.time + attackCooldown;
+        if (!CanDetectPlayer()) {
+            return;
+        }
+
+        float distanceToPlayer =
+            GetHorizontalDistanceToPlayer();
+
+        if (distanceToPlayer > attackRange) {
+            return;
+        }
 
         playerHealth.TakeDamage(
             attackDamage
@@ -180,7 +304,38 @@ public class EnemyAI : MonoBehaviour {
 
         Debug.Log(
             gameObject.name +
-            " attacked the player."
+            " hit the player."
+        );
+    }
+
+    void OnDrawGizmosSelected() {
+        Gizmos.DrawWireSphere(
+            transform.position,
+            detectionRange
+        );
+
+        if (player == null) {
+            return;
+        }
+
+        Vector3 rayOrigin;
+
+        if (eyePoint != null) {
+            rayOrigin = eyePoint.position;
+        }
+        else {
+            rayOrigin =
+                transform.position +
+                Vector3.up * 1.5f;
+        }
+
+        Vector3 targetPosition =
+            player.position +
+            Vector3.up * 1f;
+
+        Gizmos.DrawLine(
+            rayOrigin,
+            targetPosition
         );
     }
 }

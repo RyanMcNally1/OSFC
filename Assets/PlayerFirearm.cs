@@ -22,6 +22,9 @@ public class PlayerFirearm : MonoBehaviour
     private float nextFireTime;
     private bool isReloading;
 
+    [Header("Animation")]
+    public PlayerAnimation playerAnimation;
+
     private void Start() {
         if (playerCamera == null)
         {
@@ -61,6 +64,10 @@ public class PlayerFirearm : MonoBehaviour
         if (currentAmmo <= 0) {
             Debug.Log("No ammo. Press R to reload.");
             return;
+        }
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayFireAnimation();
         }
 
         float secondsBetweenShots = 60f / roundsPerMinute;
@@ -141,6 +148,11 @@ public class PlayerFirearm : MonoBehaviour
     private IEnumerator Reload() {
         isReloading = true;
 
+            if (playerAnimation != null) {
+                playerAnimation.PlayReloadAnimation();
+                playerAnimation.SetReloading(true);
+            }
+
         UIManager.Instance.ShowReloading(true);
 
         yield return new WaitForSeconds(reloadDuration);
@@ -152,6 +164,10 @@ public class PlayerFirearm : MonoBehaviour
         reserveAmmo -= ammoToLoad;
 
         isReloading = false;
+
+            if (playerAnimation != null) {
+                playerAnimation.SetReloading(false);
+            }
 
         UIManager.Instance.ShowReloading(false);
         UpdateAmmoUI();
