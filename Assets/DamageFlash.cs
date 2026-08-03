@@ -9,7 +9,7 @@ public class DamageFlash : MonoBehaviour {
     [Header("Flash Settings")]
     [SerializeField] private Color flashColor = Color.white;
     [SerializeField] private float flashDuration = 0.1f;
-    [SerializeField] private float flashIntensity = 2f;
+    [SerializeField] private float flashIntensity = 3f;
 
     private MaterialPropertyBlock propertyBlock;
     private Coroutine flashCoroutine;

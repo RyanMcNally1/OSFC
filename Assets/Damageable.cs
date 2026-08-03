@@ -6,9 +6,11 @@ public class Damageable : MonoBehaviour {
 
     private float currentHealth;
     private DamageFlash damageFlash;
+    private EnemyAnimation enemyAnimation;
 
     void Awake() {
         damageFlash = GetComponent<DamageFlash>();
+        enemyAnimation = GetComponent<EnemyAnimation>();
 
         if (damageFlash == null) {
             damageFlash = GetComponentInChildren<DamageFlash>();
@@ -38,10 +40,44 @@ public class Damageable : MonoBehaviour {
         if (currentHealth <= 0f) {
             Die();
         }
+
+        if (
+            currentHealth > 0f &&
+            enemyAnimation != null
+        ) {
+            enemyAnimation.PlayHitAnimation();
+        }
     }
 
     void Die() {
         Debug.Log($"{gameObject.name} died.");
-        Destroy(gameObject);
+
+        EnemyAI enemyAI = GetComponent<EnemyAI>();
+
+        if (enemyAI != null) {
+            enemyAI.enabled = false;
+        }
+
+        Collider enemyCollider = GetComponent<Collider>();
+
+        if (enemyCollider != null) {
+            enemyCollider.enabled = false;
+        }
+
+        Rigidbody enemyRigidbody = GetComponent<Rigidbody>();
+
+        if (enemyRigidbody != null) {
+            enemyRigidbody.linearVelocity = Vector3.zero;
+            enemyRigidbody.isKinematic = true;
+        }
+
+        if (enemyAnimation != null) {
+            enemyAnimation.PlayDeathAnimation();
+        }
+
+        Destroy(
+            gameObject,
+            3f
+        );
     }
 }

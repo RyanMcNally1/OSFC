@@ -16,6 +16,10 @@ public class PlayerHealth : MonoBehaviour
     [Header("Damage Effects")]
     public DamageFlash damageFlash;
 
+    [Header("Invulnerability")]
+    public float invulnerabilityDuration = 2f;
+    private float invulnerableUntil;
+
     void Start() {
         currentHealth = maxHealth;
         UpdateHealthUI();
@@ -36,12 +40,24 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
+        if (damage <= 0f) {
+            return;
+        }
+
+        if (Time.time < invulnerableUntil) {
+            return;
+        }
+
         currentHealth -= damage;
+
         currentHealth = Mathf.Clamp(
             currentHealth,
             0f,
             maxHealth
         );
+
+        invulnerableUntil =
+            Time.time + invulnerabilityDuration;
 
         if (damageFlash != null) {
             damageFlash.Flash();
