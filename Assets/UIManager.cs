@@ -10,14 +10,8 @@ public class UIManager : MonoBehaviour
     [Header("Health")]
     public Slider healthBar;
 
-    [Header("Items")]
-    public TMP_Text bandageText;
-
     [Header("Weapon")]
     public TMP_Text ammoText;
-
-    [Header("Grenades")]
-    public TMP_Text grenadeText;
 
     [Header("Interaction")]
     public TMP_Text interactionText;
@@ -25,16 +19,21 @@ public class UIManager : MonoBehaviour
     [Header("Actions")]
     public GameObject bandagingText;
 
+    [Header("Equipment")]
+    public TMP_Text kitText;
+
+    private int grenadeAmount;
+    private int bandageAmount;
+
+    private PlayerEquipment.EquipmentSlot selectedSlot =
+        PlayerEquipment.EquipmentSlot.None;
+
     private void Awake() {
         Instance = this;
     }
 
     public void UpdateHealth(float current, float max) {
         healthBar.value = current / max;
-    }
-
-    public void UpdateBandages(int amount) {
-        bandageText.text = "Bandages: " + amount;
     }
 
     public void UpdateAmmo(int currentAmmo, int reserveAmmo) {
@@ -52,9 +51,13 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateGrenades(int amount) {
-        if (grenadeText != null) {
-            grenadeText.text = "Grenades: " + amount;
-        }
+        grenadeAmount = amount;
+        RefreshKitText();
+    }
+
+    public void UpdateBandages(int amount) {
+        bandageAmount = amount;
+        RefreshKitText();
     }
 
     public void ShowInteraction(string text) {
@@ -64,5 +67,52 @@ public class UIManager : MonoBehaviour
 
     public void HideInteraction() {
         interactionText.gameObject.SetActive(false);
+    }
+
+    public void UpdateKitSelection(
+        PlayerEquipment.EquipmentSlot newSelectedSlot
+    ) {
+        selectedSlot = newSelectedSlot;
+        RefreshKitText();
+    }
+
+        private void RefreshKitText() {
+        if (kitText == null) {
+            return;
+        }
+
+        kitText.text =
+            FormatKitEntry(
+                "1. Rifle",
+                selectedSlot ==
+                PlayerEquipment.EquipmentSlot.Rifle
+            ) +
+            "\n" +
+            FormatKitEntry(
+                "2. Melee",
+                selectedSlot ==
+                PlayerEquipment.EquipmentSlot.Knife
+            ) +
+            "\n" +
+            FormatKitEntry(
+                $"3. Grenade [{grenadeAmount}]",
+                selectedSlot ==
+                PlayerEquipment.EquipmentSlot.Grenade
+            ) +
+            "\n" +
+            FormatKitEntry(
+                $"4. Bandage [{bandageAmount}]",
+                selectedSlot ==
+                PlayerEquipment.EquipmentSlot.Bandage
+            );
+    }
+
+    private string FormatKitEntry(
+        string label,
+        bool selected
+    ) {
+        return selected
+            ? "→ " + label
+            : "   " + label;
     }
 }

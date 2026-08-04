@@ -88,6 +88,12 @@ public class PlayerEquipment : MonoBehaviour {
         if (ammoUIObject != null) {
             ammoUIObject.SetActive(rifleEquipped);
         }
+
+        if (UIManager.Instance != null) {
+            UIManager.Instance.UpdateKitSelection(
+                currentEquipment
+            );
+        }
     }
 
     public bool IsRifleEquipped() {
