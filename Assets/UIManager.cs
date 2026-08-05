@@ -22,6 +22,10 @@ public class UIManager : MonoBehaviour
     [Header("Equipment")]
     public TMP_Text kitText;
 
+    [Header("Boss Health")]
+    public Slider bossHealthSlider;
+    public TMP_Text bossNameText;
+
     private int grenadeAmount;
     private int bandageAmount;
 
@@ -30,6 +34,14 @@ public class UIManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+
+        if (bossHealthSlider != null) {
+            bossHealthSlider.gameObject.SetActive(false);
+        }
+
+        if (bossNameText != null) {
+            bossNameText.gameObject.SetActive(false);
+        }
     }
 
     public void UpdateHealth(float current, float max) {
@@ -114,5 +126,44 @@ public class UIManager : MonoBehaviour
         return selected
             ? "→ " + label
             : "   " + label;
+    }
+
+    public void ShowBossHealth(
+        string bossName,
+        float maxHealth
+    ) {
+        if (bossHealthSlider == null) {
+            return;
+        }
+
+        bossHealthSlider.gameObject.SetActive(true);
+
+        bossHealthSlider.minValue = 0f;
+        bossHealthSlider.maxValue = maxHealth;
+        bossHealthSlider.value = maxHealth;
+
+        if (bossNameText != null) {
+            bossNameText.gameObject.SetActive(true);
+            bossNameText.text = bossName;
+        }
+    }
+
+    public void UpdateBossHealth(float currentHealth) {
+        if (bossHealthSlider == null) {
+            return;
+        }
+
+        bossHealthSlider.value =
+            Mathf.Max(0f, currentHealth);
+    }
+
+    public void HideBossHealth() {
+        if (bossHealthSlider != null) {
+            bossHealthSlider.gameObject.SetActive(false);
+        }
+
+        if (bossNameText != null) {
+            bossNameText.gameObject.SetActive(false);
+        }
     }
 }

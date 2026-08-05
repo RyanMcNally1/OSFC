@@ -32,6 +32,26 @@ public class EnemyAI : MonoBehaviour {
     private bool canSeePlayer;
     private bool hasDetectedPlayer;
 
+    [Header("Boss Ability")]
+    public bool isBoss;
+    public string bossName = "Royal Champion";
+
+    public float specialAttackRange = 4f;
+    public float specialAttackDamage = 150f;
+    public float specialAttackCooldown = 7f;
+
+    [Tooltip("Time from animation start until the stomp hits.")]
+    public float specialAttackWindup = 2f;
+
+    [Tooltip("Time after impact before the boss moves again.")]
+    public float specialAttackRecoveryTime = 0.5f;
+
+    public GameObject specialAttackVisual;
+    private float nextSpecialAttackTime;
+    private bool isPerformingSpecialAttack;
+
+    public static bool BossDefeated = false;
+
     void Start() {
         if (rb == null) {
             rb = GetComponent<Rigidbody>();
@@ -60,6 +80,10 @@ public class EnemyAI : MonoBehaviour {
                 " could not find the player."
             );
         }
+
+        if (isBoss) {
+            BossDefeated = false;
+        }
     }
 
     void Update() {
@@ -67,21 +91,47 @@ public class EnemyAI : MonoBehaviour {
             return;
         }
 
-        if (!hasDetectedPlayer && CanDetectPlayer()) {
+        if (
+            !hasDetectedPlayer &&
+            CanDetectPlayer()
+        ) {
             hasDetectedPlayer = true;
 
-            Debug.Log(
-                gameObject.name +
-                " detected the player."
-            );
+            if (
+                isBoss &&
+                UIManager.Instance != null
+            ) {
+                Damageable damageable =
+                    GetComponent<Damageable>();
+
+                if (damageable != null) {
+                    UIManager.Instance.ShowBossHealth(
+                        bossName,
+                        damageable.MaxHealth
+                    );
+                }
+            }
         }
 
         if (!hasDetectedPlayer) {
             return;
         }
 
+        if (isPerformingSpecialAttack) {
+            return;
+        }
+
         float distanceToPlayer =
             GetHorizontalDistanceToPlayer();
+
+        if (
+            isBoss &&
+            distanceToPlayer <= specialAttackRange &&
+            Time.time >= nextSpecialAttackTime
+        ) {
+            StartSpecialAttack();
+            return;
+        }
 
         if (distanceToPlayer <= attackRange) {
             TryAttack();
@@ -89,6 +139,16 @@ public class EnemyAI : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        if (isPerformingSpecialAttack) {
+            rb.linearVelocity = new Vector3(
+                0f,
+                rb.linearVelocity.y,
+                0f
+            );
+
+            return;
+        }
+
         if (player == null || rb == null) {
             return;
         }
@@ -255,6 +315,10 @@ public class EnemyAI : MonoBehaviour {
     }
 
     void TryAttack() {
+        if (isPerformingSpecialAttack) {
+            return;
+        }
+
         if (Time.time < nextAttackTime) {
             return;
         }
@@ -336,6 +400,86 @@ public class EnemyAI : MonoBehaviour {
         Gizmos.DrawLine(
             rayOrigin,
             targetPosition
+        );
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, specialAttackRange);
+    }
+
+    void StartSpecialAttack() {
+        if (isPerformingSpecialAttack) {
+            return;
+        }
+
+        isPerformingSpecialAttack = true;
+
+        nextSpecialAttackTime =
+            Time.time + specialAttackCooldown;
+
+        if (rb != null) {
+            rb.linearVelocity = new Vector3(
+                0f,
+                rb.linearVelocity.y,
+                0f
+            );
+        }
+
+        if (specialAttackVisual != null) {
+            specialAttackVisual.SetActive(true);
+        }
+
+        if (enemyAnimation != null) {
+            enemyAnimation.PlaySpecialAttackAnimation();
+        }
+
+        StartCoroutine(
+            SpecialAttackRoutine()
+        );
+    }
+
+    IEnumerator SpecialAttackRoutine() {
+        yield return new WaitForSeconds(
+            specialAttackWindup
+        );
+
+        ResolveSpecialAttack();
+
+        if (specialAttackVisual != null) {
+            specialAttackVisual.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(
+            specialAttackRecoveryTime
+        );
+
+        isPerformingSpecialAttack = false;
+    }
+
+    void ResolveSpecialAttack() {
+        if (
+            player == null ||
+            playerHealth == null
+        ) {
+            return;
+        }
+
+        float distanceToPlayer =
+            GetHorizontalDistanceToPlayer();
+
+        if (distanceToPlayer > specialAttackRange) {
+            return;
+        }
+
+        playerHealth.TakeDamage(
+            specialAttackDamage
+        );
+
+        Debug.Log(
+            gameObject.name +
+            " hit the player with Ground Slam."
         );
     }
 }

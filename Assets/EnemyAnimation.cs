@@ -68,9 +68,13 @@ public class EnemyAnimation : MonoBehaviour {
         animator.SetTrigger("Die");
     }
 
-    public void AttackHitEvent() {
-        if (enemyAI != null) {
-            enemyAI.ApplyAttackDamage();
+    public void PlaySpecialAttackAnimation() {
+        if (animator == null) {
+            return;
         }
+
+        animator.ResetTrigger("Attack");
+        animator.ResetTrigger("SpecialAttack");
+        animator.SetTrigger("SpecialAttack");
     }
 }
