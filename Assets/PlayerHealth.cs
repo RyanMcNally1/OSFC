@@ -1,15 +1,11 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PlayerHealth : MonoBehaviour
-{
+public class PlayerHealth : MonoBehaviour {
+
     [Header("Configurations")]
     public float maxHealth = 100f;
     public float currentHealth;
-
-    [Header("UI")]
-    public Slider healthBar;
 
     [Header("Animation")]
     public PlayerAnimation playerAnimation;
@@ -28,7 +24,7 @@ public class PlayerHealth : MonoBehaviour
 
     void Start() {
         currentHealth = maxHealth;
-        UpdateHealthUI();
+        RefreshUI();
 
         if (playerAnimation == null) {
             playerAnimation =
@@ -42,22 +38,16 @@ public class PlayerHealth : MonoBehaviour
     }
 
     public void TakeDamage(float damage) {
-        if (currentHealth <= 0f) {
+        if (
+            currentHealth <= 0f ||
+            damage <= 0f ||
+            Time.time < invulnerableUntil
+        ) {
             return;
         }
-
-        if (damage <= 0f) {
-            return;
-        }
-
-        if (Time.time < invulnerableUntil) {
-            return;
-        }
-
-        currentHealth -= damage;
 
         currentHealth = Mathf.Clamp(
-            currentHealth,
+            currentHealth - damage,
             0f,
             maxHealth
         );
@@ -65,41 +55,41 @@ public class PlayerHealth : MonoBehaviour
         invulnerableUntil =
             Time.time + invulnerabilityDuration;
 
+        RefreshUI();
+
         if (damageFlash != null) {
             damageFlash.Flash();
         }
 
-        if (
-            currentHealth > 0f &&
-            playerAnimation != null
-        ) {
-            playerAnimation.PlayHitAnimation();
-        }
-
-        UpdateHealthUI();
-
         if (currentHealth <= 0f) {
             Die();
+            return;
+        }
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayHitAnimation();
         }
     }
 
     public void Heal(float amount) {
-        currentHealth += amount;
-
-        if (currentHealth > maxHealth)
-            currentHealth = maxHealth;
-
-        UpdateHealthUI();
-    }
-
-    void UpdateHealthUI() {
-        if (healthBar != null)
-        {
-            healthBar.value = currentHealth / maxHealth;
+        if (
+            amount <= 0f ||
+            currentHealth <= 0f
+        ) {
+            return;
         }
+
+        currentHealth = Mathf.Clamp(
+            currentHealth + amount,
+            0f,
+            maxHealth
+        );
+
+        RefreshUI();
     }
 
     public void ResetHealth() {
+        isDead = false;
         currentHealth = maxHealth;
         RefreshUI();
     }
@@ -159,12 +149,14 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-        public void RefreshUI() {
-        if (UIManager.Instance != null) {
-            UIManager.Instance.UpdateHealth(
-                currentHealth,
-                maxHealth
-            );
+    public void RefreshUI() {
+        if (UIManager.Instance == null) {
+            return;
         }
+
+        UIManager.Instance.UpdateHealth(
+            currentHealth,
+            maxHealth
+        );
     }
 }

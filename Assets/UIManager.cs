@@ -35,6 +35,11 @@ public class UIManager : MonoBehaviour
     private void Awake() {
         Instance = this;
 
+        Debug.Log(
+            $"UIManager Instance set to {gameObject.name} " +
+            $"in scene {gameObject.scene.name}"
+        );
+
         if (bossHealthSlider != null) {
             bossHealthSlider.gameObject.SetActive(false);
         }
@@ -44,9 +49,41 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateHealth(float current, float max) {
-        healthBar.value = current / max;
+private void OnDestroy() {
+    if (Instance == this) {
+        Debug.Log(
+            $"Clearing UIManager from scene " +
+            gameObject.scene.name
+        );
+
+        Instance = null;
     }
+}
+
+    public void UpdateHealth(float current, float max) {
+        Debug.Log(
+            $"UpdateHealth called on {gameObject.name}: " +
+            $"{current} / {max}"
+        );
+
+        if (healthBar == null) {
+            Debug.LogError(
+                $"Health Bar is missing on {gameObject.name}.",
+                this
+            );
+
+            return;
+        }
+
+    healthBar.minValue = 0f;
+    healthBar.maxValue = max;
+    healthBar.value = Mathf.Clamp(current, 0f, max);
+
+    Debug.Log(
+        $"Slider updated to {healthBar.value}; " +
+        $"slider max is {healthBar.maxValue}"
+    );
+}
 
     public void UpdateAmmo(int currentAmmo, int reserveAmmo) {
         ammoText.text = "Ammo: " + currentAmmo + " / " + reserveAmmo;
