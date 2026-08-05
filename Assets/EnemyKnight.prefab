@@ -194,7 +194,7 @@ MonoBehaviour:
   rb: {fileID: 5042555004835246450}
   player: {fileID: 0}
   eyePoint: {fileID: 8594399556684242883}
-  detectionRange: 25
+  detectionRange: 100
   lineOfSightLayers:
     serializedVersion: 2
     m_Bits: 72
@@ -207,6 +207,14 @@ MonoBehaviour:
   attackCooldown: 2.2
   attackHitDelay: 0.45
   enemyAnimation: {fileID: 6762396384143890616}
+  isBoss: 0
+  bossName: Royal Champion
+  specialAttackRange: 4
+  specialAttackDamage: 150
+  specialAttackCooldown: 7
+  specialAttackWindup: 2
+  specialAttackRecoveryTime: 0.5
+  specialAttackVisual: {fileID: 0}
 --- !u!114 &5695748447880641723
 MonoBehaviour:
   m_ObjectHideFlags: 0
