@@ -174,13 +174,23 @@ public class PlayerFirearm : MonoBehaviour
     }
 
     public void RefillAmmo() {
+        StopAllCoroutines();
+
+        isReloading = false;
         currentAmmo = magazineSize;
         reserveAmmo = maxReserveAmmo;
 
-        UIManager.Instance.UpdateAmmo(
-            currentAmmo,
-            reserveAmmo
-        );
+        if (playerAnimation != null) {
+            playerAnimation.SetReloading(false);
+        }
+
+        if (UIManager.Instance != null) {
+            UIManager.Instance.ShowReloading(false);
+            UIManager.Instance.UpdateAmmo(
+                currentAmmo,
+                reserveAmmo
+            );
+        }
     }
 
     private void UpdateAmmoUI() {

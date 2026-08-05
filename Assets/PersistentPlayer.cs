@@ -7,6 +7,7 @@ public class PersistentPlayer : MonoBehaviour {
     private static PersistentPlayer instance;
 
     private Rigidbody playerRigidbody;
+    private bool isPreparingForRestart;
 
     [Header("UI Refresh")]
     public PlayerHealth playerHealth;
@@ -47,17 +48,23 @@ public class PersistentPlayer : MonoBehaviour {
 
         if (playerBandage == null) {
             playerBandage =
-                GetComponentInChildren<PlayerBandage>(true);
+                GetComponentInChildren<PlayerBandage>(
+                    true
+                );
         }
 
         if (grenadeThrower == null) {
             grenadeThrower =
-                GetComponentInChildren<PlayerGrenadeThrower>(true);
+                GetComponentInChildren<PlayerGrenadeThrower>(
+                    true
+                );
         }
 
         if (rifle == null) {
             rifle =
-                GetComponentInChildren<PlayerFirearm>(true);
+                GetComponentInChildren<PlayerFirearm>(
+                    true
+                );
         }
 
         if (playerEquipment == null) {
@@ -70,12 +77,18 @@ public class PersistentPlayer : MonoBehaviour {
         Scene scene,
         LoadSceneMode mode
     ) {
+        if (isPreparingForRestart) {
+            return;
+        }
+
         StartCoroutine(
             MovePlayerToSpawn(scene)
         );
     }
 
-    IEnumerator MovePlayerToSpawn(Scene loadedScene) {
+    IEnumerator MovePlayerToSpawn(
+        Scene loadedScene
+    ) {
         yield return null;
 
         GameObject[] spawnPoints =
@@ -156,14 +169,29 @@ public class PersistentPlayer : MonoBehaviour {
         }
     }
 
-    void OnDestroy() {
-        if (instance != this) {
+    public void PrepareForRestart() {
+        if (isPreparingForRestart) {
             return;
         }
+
+        isPreparingForRestart = true;
 
         SceneManager.sceneLoaded -=
             OnSceneLoaded;
 
-        instance = null;
+        if (instance == this) {
+            instance = null;
+        }
+
+        Destroy(gameObject);
+    }
+
+    void OnDestroy() {
+        SceneManager.sceneLoaded -=
+            OnSceneLoaded;
+
+        if (instance == this) {
+            instance = null;
+        }
     }
 }

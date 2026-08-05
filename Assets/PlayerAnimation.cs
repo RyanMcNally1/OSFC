@@ -209,4 +209,15 @@ public class PlayerAnimation : MonoBehaviour {
         animator.ResetTrigger("TakeHit");
         animator.SetTrigger("TakeHit");
     }
+
+    public void PlayDeathAnimation() {
+        if (animator == null) {
+            return;
+        }
+
+        animator.SetBool("IsDead", true);
+
+        animator.ResetTrigger("Die");
+        animator.SetTrigger("Die");
+    }
 }

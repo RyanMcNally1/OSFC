@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,11 @@ public class PlayerHealth : MonoBehaviour
     [Header("Invulnerability")]
     public float invulnerabilityDuration = 2f;
     private float invulnerableUntil;
+
+    [Header("Death")]
+    [SerializeField] private float deathScreenDelay = 2f;
+
+    private bool isDead;
 
     void Start() {
         currentHealth = maxHealth;
@@ -93,12 +99,64 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void Die() {
-        Debug.Log("Player Died");
+    public void ResetHealth() {
+        currentHealth = maxHealth;
+        RefreshUI();
+    }
 
-        // Disable player controls
-        // Play death animation
-        // Show Game Over screen
+    void Die() {
+        if (isDead) {
+            return;
+        }
+
+        isDead = true;
+        currentHealth = 0f;
+
+        RefreshUI();
+
+        PlayerController controller =
+            GetComponent<PlayerController>();
+
+        if (controller != null) {
+            controller.enabled = false;
+        }
+
+        Rigidbody playerRigidbody =
+            GetComponent<Rigidbody>();
+
+        if (playerRigidbody != null) {
+            playerRigidbody.linearVelocity =
+                Vector3.zero;
+
+            playerRigidbody.angularVelocity =
+                Vector3.zero;
+        }
+
+        if (playerAnimation != null) {
+            playerAnimation.PlayDeathAnimation();
+        }
+
+        StartCoroutine(
+            ShowDeathScreenAfterAnimation()
+        );
+    }
+
+    IEnumerator ShowDeathScreenAfterAnimation() {
+        yield return new WaitForSeconds(
+            deathScreenDelay
+        );
+
+        PauseMenu pauseMenu =
+            FindAnyObjectByType<PauseMenu>();
+
+        if (pauseMenu != null) {
+            pauseMenu.ShowDeathScreen();
+        }
+        else {
+            Debug.LogWarning(
+                "PlayerHealth could not find the PauseMenu."
+            );
+        }
     }
 
         public void RefreshUI() {

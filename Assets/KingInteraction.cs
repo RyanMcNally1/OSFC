@@ -11,17 +11,16 @@ public class KingInteraction : Interactable {
 
         hasBeenCaptured = true;
 
-        Debug.Log(
-            "The player captured the king. Game won."
-        );
+        PauseMenu pauseMenu =
+            FindAnyObjectByType<PauseMenu>();
 
-        // Add the real win-screen behavior later.
-        ActivateWin();
-    }
-
-    void ActivateWin() {
-        Debug.Log(
-            "Win sequence activated."
-        );
+        if (pauseMenu != null) {
+            pauseMenu.ShowWinScreen();
+        }
+        else {
+            Debug.LogWarning(
+                "KingInteraction could not find PauseMenu."
+            );
+        }
     }
 }

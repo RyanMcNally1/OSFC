@@ -343,6 +343,28 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 57391266}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &96289061 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8230145360454288214, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173f16bf3d4d6514fadab35dd08f8a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerKnife
+--- !u!114 &123467293 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2498581802443617448, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d5421d18797534a9f921fbacde0345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBandage
 --- !u!1 &126002263
 GameObject:
   m_ObjectHideFlags: 0
@@ -2027,6 +2049,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 469992704}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &483296424 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5705150660715229213, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c57f84e61bd714c96e0f64f09b4f54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFirearm
 --- !u!1 &507527206
 GameObject:
   m_ObjectHideFlags: 0
@@ -2699,6 +2732,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerKnife
+      value: 
+      objectReference: {fileID: 96289061}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerBandage
+      value: 
+      objectReference: {fileID: 123467293}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerFirearm
+      value: 
+      objectReference: {fileID: 483296424}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: grenadeThrower
+      value: 
+      objectReference: {fileID: 1889086930}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerEquipment
+      value: 
+      objectReference: {fileID: 1770753067}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 1770753071}
+    - target: {fileID: 8717219553667785937, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: playerInteraction
+      value: 
+      objectReference: {fileID: 1770753065}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6515,6 +6576,39 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1759020482}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1770753065 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4909797174807099805, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc1cbb4598d1634dbbb374f0054b5ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+--- !u!114 &1770753067 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1165146397563950627, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4309e68ae5e5c004284f44c84bd85970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerEquipment
+--- !u!114 &1770753071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9092811112985244556, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61d6ef42190e814ebc9bb08ac5d62a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
 --- !u!1 &1771533545
 GameObject:
   m_ObjectHideFlags: 0
@@ -6956,6 +7050,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862232361}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1889086930 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7944074839424866307, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f6e61046b3d074881284d5dae6a8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerGrenadeThrower
 --- !u!1 &1891814246
 GameObject:
   m_ObjectHideFlags: 0
