@@ -101,10 +101,12 @@ public class PlayerHealth : MonoBehaviour
         // Show Game Over screen
     }
 
-    void Update() {
-    if (Input.GetKeyDown(KeyCode.H))
-    {
-        TakeDamage(10);
+        public void RefreshUI() {
+        if (UIManager.Instance != null) {
+            UIManager.Instance.UpdateHealth(
+                currentHealth,
+                maxHealth
+            );
         }
     }
 }

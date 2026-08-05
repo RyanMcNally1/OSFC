@@ -188,4 +188,8 @@ public class PlayerFirearm : MonoBehaviour
         UIManager.Instance.UpdateAmmo(currentAmmo, reserveAmmo);
         }
     }
+
+    public void RefreshUI() {
+        UpdateAmmoUI();
+    }
 }

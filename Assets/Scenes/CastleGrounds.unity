@@ -1680,6 +1680,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370562719}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &374880701 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5659985588326174138, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+  m_PrefabInstance: {fileID: 774734419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8f15f8ecfa6c1249ad899f025e3cd23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
 --- !u!1 &404966913
 GameObject:
   m_ObjectHideFlags: 0
@@ -2596,6 +2607,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1729388305929833712, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729388305929833712, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2030778091679530139, guid: d570b64af170f694d883f42ea069fe60, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3394,7 +3413,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 163737331861442423, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.8171468
+      value: -7.7
       objectReference: {fileID: 0}
     - target: {fileID: 163737331861442423, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3436,6 +3455,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.34
       objectReference: {fileID: 0}
+    - target: {fileID: 1708452612042591481, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 4470121200979806333, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+      propertyPath: healthBar
+      value: 
+      objectReference: {fileID: 932665771}
+    - target: {fileID: 4470121200979806333, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
+      propertyPath: damageFlash
+      value: 
+      objectReference: {fileID: 374880701}
     - target: {fileID: 5318315093907782075, guid: 9b8a476113d4ab44f8561dc0111b14e9, type: 3}
       propertyPath: m_Name
       value: Player
@@ -4082,6 +4113,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2308e5810aad02f4ea56b83637632684, type: 3}
+--- !u!114 &932665771 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4979464076337305056, guid: d570b64af170f694d883f42ea069fe60, type: 3}
+  m_PrefabInstance: {fileID: 675690182}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &1005359220
 GameObject:
   m_ObjectHideFlags: 0
@@ -7026,6 +7068,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891814246}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1906406464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1906406465}
+  m_Layer: 0
+  m_Name: Spawnpoint
+  m_TagString: PlayerSpawn
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1906406465
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906406464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.06715, y: 0.91074, z: 5.31468}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1911170073
 GameObject:
   m_ObjectHideFlags: 0
@@ -9014,3 +9087,4 @@ SceneRoots:
   - {fileID: 154879667}
   - {fileID: 795678291}
   - {fileID: 1723434030}
+  - {fileID: 1906406465}

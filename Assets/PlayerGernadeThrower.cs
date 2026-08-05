@@ -165,4 +165,8 @@ public class PlayerGrenadeThrower : MonoBehaviour {
             UIManager.Instance.UpdateGrenades(currentGrenades);
         }
     }
+
+    public void RefreshUI() {
+        UpdateGrenadeUI();
+    }
 }

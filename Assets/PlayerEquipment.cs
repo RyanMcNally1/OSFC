@@ -112,7 +112,9 @@ public class PlayerEquipment : MonoBehaviour {
         return currentEquipment == EquipmentSlot.Bandage;
     }
 
-    public EquipmentSlot GetCurrentEquipment() {
-        return currentEquipment;
+public EquipmentSlot CurrentEquipment {
+        get {
+            return currentEquipment;
+        }
     }
 }

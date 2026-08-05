@@ -125,4 +125,8 @@ public class PlayerBandage : MonoBehaviour {
             UIManager.Instance.UpdateBandages(currentBandages);
         }
     }
+
+    public void RefreshUI() {
+        UpdateBandageUI();
+    }
 }
